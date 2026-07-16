@@ -1,5 +1,12 @@
+from flask import Flask
 
-import asyncio
-from telegram.session import start_session
+app = Flask(__name__)
 
-asyncio.run(start_session())
+@app.route("/")
+def home():
+    return {
+        "status": "Lootify AI Running"
+    }
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
