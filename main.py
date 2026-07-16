@@ -1,75 +1,13 @@
-from flask import Flask, request, jsonify
-import google.generativeai as genai
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-genai.configure(api_key=os.getenv("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"))
-
-model = genai.GenerativeModel("gemini-2.5-flash")
-
-app = Flask(__name__)
-
-
-@app.route("/")
-def home():
-    return jsonify({
-        "project": "Lootify AI v2",
-        "status": "Running"
-    })
-
-
 @app.route("/generate-post", methods=["POST"])
 def generate_post():
-
-    data = request.json
-
-    prompt = f"""
-
-Create a professional Telegram affiliate shopping post.
-
-Product Name:
-{data["title"]}
-
-Current Price:
-{data["price"]}
-
-Original Price:
-{data["original_price"]}
-
-Discount:
-{data["discount"]}
-
-Coupon:
-{data["coupon"]}
-
-Write a natural human-like Telegram post.
-
-Include:
-
-🔥 Title
-
-50-60 words description
-
-Price
-
-Discount
-
-Coupon
-
-Buy Now👇
-
-"""
-
-    response = model.generate_content(prompt)
-
-    return jsonify({
-
-        "telegram_post": response.text
-
-    })
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    try:
+        data = request.get_json(force=True)
+        return jsonify({
+            "success": True,
+            "received": data
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
